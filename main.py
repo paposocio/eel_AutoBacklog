@@ -2,12 +2,20 @@ import eel
 import tkinter
 from tkinter import filedialog as fd
 
-eel.init('web')
+eel.init("web")
+
 
 @eel.expose
 def choose_file():
+    file_options = {
+        "defaultextension": ".xlsx",
+        "filetypes": [
+            ("Archivos de Excel", "*.xlsx;*.xls")
+        ],
+    }
     tkinter.Tk().withdraw()
-    filename = fd.askopenfilename()
+    filename = fd.askopenfilename(**file_options)
     return filename
-    
-eel.start('fijo.html', size=(1000, 700))
+
+
+eel.start("index.html")
