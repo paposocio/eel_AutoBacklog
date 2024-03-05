@@ -1,1 +1,3 @@
-testfiles/
+test_files/
+output/
+__pycache__/
