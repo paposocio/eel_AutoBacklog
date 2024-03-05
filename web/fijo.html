@@ -20,10 +20,10 @@
 <body x-data="{file1:null,file2:null,file3:null}">
     <header>
         <div class="header">
-            <img class="logo" src="images/logo.png">
+            <img class="logo" src="images/logo.webp">
             <h1 class="display-6">Auto-Backlog</h1>
             <div class="header-right">
-                <a onclick="go_to('/')">Fijo</a>
+                <a onclick="go_to('/index.html')">Volver</a>
                 <a onclick="go_to('/movil.html')">Movil</a>
                 <a onclick="go_to('/FTTH.html')">FTTH</a>
             </div>
@@ -32,34 +32,39 @@
     <section class="container-fluid" style="margin-top: 30px">
         <div class="sidebar container">
             <h3>Generador fijo</h3>
-            <p class="small">Adjunte las bases de los ultimos 3 meses <mark>(recuerde que la primera entrada establece
+            <p class="small">Adjunte las bases de los ultimos 3 meses en orden descendente <mark>(recuerde que la primera entrada establece
                     el mes de medicion)</mark> :</p>
-            <div class="container mt-5">
-                <div class="input-group mb-3">
-                    <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                        x-on:click="file1 = eel.choose_file()">Base 1</button>
-                    <span x-text="file1 == null ? 'Ningun archivo seleccionado': file1" class="form-control"></span>
-                    <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1" id="mes1"
-                        required>
+            <form id="mes_archivos_form" onsubmit="enviarFormulario(event)">
+                <div class="container mt-5">
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
+                            x-on:click="file1 = eel.choose_file()">Base 1</button>
+                        <span x-text="file1 == null ? 'Ningun archivo seleccionado': file1"
+                            class="form-control" id="ruta_excel_base1" readonly required></span>
+                        <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
+                            id="mes1" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
+                            x-on:click="file2 = eel.choose_file()">Base 2</button>
+                        <span x-text="file2 == null ? 'Ningun archivo seleccionado': file2"
+                            class="form-control" id="ruta_excel_base2" readonly required></span>
+                        <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
+                            id="mes2" readonly required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
+                            x-on:click="file3 = eel.choose_file()">Base 3</button>
+                        <span x-text="file3 == null ? 'Ningun archivo seleccionado': file3"
+                            class="form-control" id="ruta_excel_base3" readonly required></span>
+                        <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
+                            id="mes3" readonly required>
+                    </div>
                 </div>
-                <div class="input-group mb-3">
-                    <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                        x-on:click="file2 = eel.choose_file()">Base 2</button>
-                    <span x-text="file2 == null ? 'Ningun archivo seleccionado': file2" class="form-control"></span>
-                    <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1" id="mes2"
-                        readonly required>
+                <div style="display: flex;align-items: center;justify-content: center;">
+                    <button type="submit" class="btn btn-danger">Transformar</button>
                 </div>
-                <div class="input-group mb-3">
-                    <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                        x-on:click="file3 = eel.choose_file()">Base 3</button>
-                    <span x-text="file3 == null ? 'Ningun archivo seleccionado': file3" class="form-control"></span>
-                    <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1" id="mes3"
-                        readonly required>
-                </div>
-            </div>
-            <div style="display: flex;align-items: center;justify-content: center;">
-                <button type="submit" class="btn btn-danger">Transformar</button>
-            </div>
+            </form>
         </div>
     </section>
 </body>
