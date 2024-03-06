@@ -1,7 +1,8 @@
 import eel
 import tkinter
+import pandas
 from tkinter import filedialog as fd
-from data_transformation import data_transformation
+from py_backend.data_transformation import data_transformation
 
 eel.init("web")
 
@@ -31,4 +32,13 @@ def data(rutas, meses):
     data_transformation(rutas, meses)
 
 
-eel.start("index.html")
+@eel.expose
+def obtener_datos_excel():
+    dataframe_excel = pandas.read_excel("file_preview.xlsx")
+    # Convertir el DataFrame a formato JSON
+    json_data = dataframe_excel.to_json(orient="split", index=False)
+    # Retornar el JSON
+    return json_data
+
+
+eel.start("views/example.html",cmdline_args=['--start-maximized'])

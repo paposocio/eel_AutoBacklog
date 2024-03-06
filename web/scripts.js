@@ -19,5 +19,5 @@ function enviarFormulario(event) {
     let meses = [mes1,mes2,mes3]
 
     eel.data(rutas,meses)
+    go_to('/example.html')
 }
-
