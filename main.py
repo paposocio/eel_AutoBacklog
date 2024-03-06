@@ -41,4 +41,4 @@ def obtener_datos_excel():
     return json_data
 
 
-eel.start("views/example.html",cmdline_args=['--start-maximized'])
+eel.start("views/tests.html",cmdline_args=['--start-maximized'])

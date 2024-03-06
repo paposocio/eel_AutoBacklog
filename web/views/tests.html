@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Display table with vertical scrollbar
+    </title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+        integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        table {
+            width: auto;
+            height: 500px;
+            border-collapse: collapse;
+            empty-cells: hide;
+            table-layout: fixed;
+        }
+
+        tbody,
+        thead {
+            display: block;
+        }
+
+        tbody {
+            height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: calc(100% + 5px);
+        }
+
+        th,
+        td {
+            text-align: center;
+            width: 110px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preview">
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-11">
+                <h3 class="text-center">
+                    h3. Lorem ipsum dolor sit amet.
+                </h3>
+            </div>
+            <div class="col-md-1">
+
+                <button type="button" class="btn btn-danger">
+                    Volver
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+
+                <button type="button" class="btn btn-sm btn-block btn-outline-success">
+                    EXCEL
+                </button>
+                <button type="button" class="btn btn-sm btn-block btn-outline-secondary">
+                    CSV
+                </button>
+                <button type="button" class="btn btn-sm btn-block btn-outline-primary">
+                    COPIAR
+                </button>
+            </div>
+            <div class="col-md-10">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Product
+                            </th>
+                            <th>
+                                Payment Taken
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                TB - Monthly
+                            </td>
+                            <td>
+                                01/04/2012
+                            </td>
+                            <td>
+                                Default
+                            </td>
+                        </tr>
+                        <tr class="table-active">
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                TB - Monthly
+                            </td>
+                            <td>
+                                01/04/2012
+                            </td>
+                            <td>
+                                Approved
+                            </td>
+                        </tr>
+                        <tr class="table-success">
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                TB - Monthly
+                            </td>
+                            <td>
+                                02/04/2012
+                            </td>
+                            <td>
+                                Declined
+                            </td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td>
+                                3
+                            </td>
+                            <td>
+                                TB - Monthly
+                            </td>
+                            <td>
+                                03/04/2012
+                            </td>
+                            <td>
+                                Pending
+                            </td>
+                        </tr>
+                        <tr class="table-danger">
+                            <td>
+                                4
+                            </td>
+                            <td>
+                                TB - Monthly
+                            </td>
+                            <td>
+                                04/04/2012
+                            </td>
+                            <td>
+                                Call in to confirm
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <body>
+
+</html>
+<script>
+    async function cargarDatosExcel() {
+        // Llamar a la función Python y obtener el JSON
+        const json_data = await eel.obtener_datos_excel()();
+
+        // Convertir el JSON a un objeto JavaScript
+        const datos = JSON.parse(json_data);
+
+        // Acceder a los datos según la estructura del JSON
+        const columnas = datos.columns;
+        const filas = datos.data;
+
+        // Crear una tabla HTML y mostrar los datos
+        let tablaHTML = "<table class='scrolldown'><thead><tr>";
+        columnas.forEach(columna => {
+            tablaHTML += "<th>" + columna + "</th>";
+        });
+        tablaHTML += "</tr></thead><tbody>";
+
+        filas.forEach(fila => {
+            tablaHTML += "<tr>";
+            fila.forEach(valor => {
+                tablaHTML += "<td>" + valor + "</td>";
+            });
+            tablaHTML += "</tr>";
+        });
+
+        tablaHTML += "</tbody></table>";
+
+        // Mostrar la tabla en el div con id "contenido"
+        document.getElementById("preview").innerHTML = tablaHTML;
+    }
+
+    // Llamar a la función al cargar la página
+    cargarDatosExcel();
+</script>
