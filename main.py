@@ -3,6 +3,7 @@ import tkinter
 import pandas
 from tkinter import filedialog as fd
 from py_backend.data_transformation import data_transformation
+from py_backend.data_exporting import data_export
 
 eel.init("web")
 
@@ -40,5 +41,8 @@ def obtener_datos_excel():
     # Retornar el JSON
     return json_data
 
+@eel.expose
+def export():
+    data_export()
 
-eel.start("views/tests.html",cmdline_args=['--start-maximized'])
+eel.start("index.html",cmdline_args=['--start-maximized'])

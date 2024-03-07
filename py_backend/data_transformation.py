@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def data_transformation(rutas, meses):
 
     ruta_excel_base1 = rutas[0]
@@ -75,4 +76,12 @@ def data_transformation(rutas, meses):
 
     dataframe_fusionado_ordenado = dataframe_fusionado.sort_values(by="Priorizacion")
 
-    dataframe_fusionado_ordenado.to_excel("file_preview.xlsx", index=False)
+    # Resetear el índice sin agregar una nueva columna
+    dataframe_fusionado_ordenado_reset = dataframe_fusionado_ordenado.reset_index(
+        drop=True
+    )
+    
+    dataframe_fusionado_ordenado_reset.index = pd.RangeIndex(start=1, stop=len(dataframe_fusionado_ordenado_reset) + 1, name="#")
+    
+    # Guardar el DataFrame con el nuevo índice en un archivo Excel
+    dataframe_fusionado_ordenado_reset.to_excel("file_preview.xlsx", index=True)
