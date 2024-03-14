@@ -35,7 +35,16 @@ def data_transformation(rutas, meses):
     dataframe_fusionado[mes_anterior].fillna(0, inplace=True)
     dataframe_fusionado[mes_medicion].fillna(0, inplace=True)
 
-    columnas = ["NODO", mes_antepasado, mes_anterior, mes_medicion]
+    columnas = [
+        "NODO",
+        "REGIONAL",
+        "CIUDAD",
+        "Aliado",
+        "OPERA",
+        mes_antepasado,
+        mes_anterior,
+        mes_medicion,
+    ]
 
     dataframe_fusionado = dataframe_fusionado[columnas]
 
@@ -80,8 +89,10 @@ def data_transformation(rutas, meses):
     dataframe_fusionado_ordenado_reset = dataframe_fusionado_ordenado.reset_index(
         drop=True
     )
-    
-    dataframe_fusionado_ordenado_reset.index = pd.RangeIndex(start=1, stop=len(dataframe_fusionado_ordenado_reset) + 1, name="#")
-    
+
+    dataframe_fusionado_ordenado_reset.index = pd.RangeIndex(
+        start=1, stop=len(dataframe_fusionado_ordenado_reset) + 1, name="#"
+    )
+
     # Guardar el DataFrame con el nuevo índice en un archivo Excel
     dataframe_fusionado_ordenado_reset.to_excel("file_preview.xlsx", index=True)
