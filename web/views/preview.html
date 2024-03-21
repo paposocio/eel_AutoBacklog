@@ -140,13 +140,13 @@
                 <div class="col-md-2">
                     <div class="btn-group btn-group-horizontal" role="group">
 
-                        <button class="btn btn-success" type="button" onclick="eel.export()">
+                        <button class="btn btn-success" type="button" onclick="eel.export(1)">
                             Excel
                         </button>
-                        <button class="btn btn-secondary" type="button">
+                        <button class="btn btn-secondary" type="button" onclick="eel.export(2)">
                             CSV
                         </button>
-                        <button class="btn btn-dark" type="button">
+                        <button class="btn btn-dark" type="button" id="clipboard" onclick="eel.export(3)">
                             Copiar
                         </button>
                     </div>
@@ -165,6 +165,12 @@
 <script type="text/javascript" src="/eel.js"></script>
 <script src="../scripts.js"></script>
 <script>
+    const elemento = document.querySelector("#clipboard");
+
+    elemento.addEventListener("click", function () {
+        alert("Informacion copiada al portapapeles")
+    });
+
     function ocultarLoader() {
         document.getElementById("loader_container").style.display = "none";
         document.getElementById("contenido").style.display = "block";

@@ -42,7 +42,7 @@ def obtener_datos_excel():
     return json_data
 
 @eel.expose
-def export():
-    data_export()
+def export(option):
+    data_export(option)
 
 eel.start("index.html",cmdline_args=['--start-maximized'])
