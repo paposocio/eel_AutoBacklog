@@ -120,9 +120,9 @@
             <img class="logo" src="../images/logo.webp">
             <h1 class="display-6">Auto-Backlog</h1>
             <div class="header-right">
-                <a onclick="go_to('/views/fijo.html')">Volver</a>
-                <a onclick="go_to('/movil.html')">Movil</a>
-                <a onclick="go_to('/FTTH.html')">FTTH</a>
+                <a href='./fijo.html'>Volver</a>
+                <a href='./movil.html'>Movil</a>
+                <a href='./FTTH.html'>FTTH</a>
             </div>
         </div>
     </header>
@@ -178,6 +178,8 @@
     async function cargarDatosExcel() {
         const json_data = await eel.obtener_datos_excel()();
 
+        const tope = await eel.extConfig('ConfigFijo', 'topenodos')()
+
         const datos = JSON.parse(json_data);
 
         const columnas = datos.columns;
@@ -190,7 +192,6 @@
         tablaHTML += "</tr></thead><tbody>";
 
         filas.forEach(fila => {
-            let tope = 1061
             if (fila[0] > tope) {
                 tablaHTML += "<tr class='table-danger'>";
             }

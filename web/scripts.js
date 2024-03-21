@@ -1,6 +1,3 @@
-eel.expose(go_to)
-function go_to(url) { window.location.replace(url); };
-
 eel.expose(enviarFormulario)
 function enviarFormulario(event) {
     event.preventDefault(); // Evita que el formulario se envíe de manera predeterminada
@@ -19,5 +16,5 @@ function enviarFormulario(event) {
     let meses = [mes1,mes2,mes3]
 
     eel.data(rutas,meses)
-    go_to('/views/preview.html')
+    location.href ='/views/preview.html'
 }

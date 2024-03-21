@@ -4,9 +4,10 @@ import pandas
 from tkinter import filedialog as fd
 from py_backend.data_transformation import data_transformation
 from py_backend.data_exporting import data_export
+from py_backend.settings import extractConfig
+from py_backend.settings import fijoConfig
 
 eel.init("web")
-
 
 @eel.expose
 def choose_file():
@@ -27,11 +28,9 @@ def choose_file():
 
     return filename
 
-
 @eel.expose
-def data(rutas, meses):
+def data(rutas, meses): 
     data_transformation(rutas, meses)
-
 
 @eel.expose
 def obtener_datos_excel():
@@ -44,5 +43,13 @@ def obtener_datos_excel():
 @eel.expose
 def export(option):
     data_export(option)
-
+    
+@eel.expose
+def extConfig(seccion,atrib):
+    return extractConfig(seccion,atrib)
+    
+@eel.expose
+def fConfig(atrib,valor):
+    fijoConfig(atrib,valor)
+    
 eel.start("index.html",cmdline_args=['--start-maximized'])
