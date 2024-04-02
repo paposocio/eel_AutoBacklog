@@ -1,4 +1,5 @@
 import pandas as pd
+from configparser import ConfigParser
 
 
 def data_transformation(rutas, meses):
@@ -50,32 +51,41 @@ def data_transformation(rutas, meses):
 
     # Define la función para evaluar cada fila y asignar un texto y un valor numérico
     def evaluar_fila(fila):
+        config = ConfigParser()
+        config.read("settings.ini", encoding="utf-8")
+
         if (
             fila[mes_medicion] == 1
             and fila[mes_anterior] == 1
             and fila[mes_antepasado] == 1
         ):
-            return ("Recurrente 3 meses", 3)
+            return ("Recurrente 3 meses", int(config["ConfigFijo"]["rec3Mes"]))
         elif fila[mes_medicion] == 1 and (
             fila[mes_anterior] == 1 or fila[mes_antepasado] == 1
         ):
-            return ("Mes de medicion si + 1 (cualquiera)", 4)
+            return (
+                "Mes de medicion si + 1 (cualquiera)",
+                int(config["ConfigFijo"]["medMasUno"]),
+            )
         elif (
             fila[mes_medicion] == 0
             and fila[mes_anterior] == 1
             and fila[mes_antepasado] == 1
         ):
-            return ("Mes de medicion no + 2", 5)
+            return ("Mes de medicion no + 2", int(config["ConfigFijo"]["medNoMasDos"]))
         elif (
             fila[mes_medicion] == 1
             and fila[mes_anterior] == 0
             and fila[mes_antepasado] == 0
         ):
-            return ("Mes de medicion si + 0", 6)
+            return ("Mes de medicion si + 0", int(config["ConfigFijo"]["medMasCero"]))
         elif fila[mes_medicion] == 0 and (
             fila[mes_anterior] == 1 or fila[mes_antepasado] == 1
         ):
-            return ("Mes de medicion no + 1 (cualquiera)", 7)
+            return (
+                "Mes de medicion no + 1 (cualquiera)",
+                int(config["ConfigFijo"]["medNoMasUno"]),
+            )
 
     # Aplica la función a cada fila del DataFrame utilizando apply()
     dataframe_fusionado[["Caso", "Priorizacion"]] = dataframe_fusionado.apply(
