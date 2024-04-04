@@ -17,7 +17,7 @@
 
 </head>
 
-<body x-data="{file1:null,file2:null,file3:null}">
+<body x-data="{file1:null,file2:null,file3:null,file4:null}">
     <header>
         <div class="header">
             <img class="logo" src="../images/logo.webp">
@@ -61,7 +61,14 @@
                         <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
                             id="mes3" readonly required>
                     </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon1"
+                            x-on:click="file4 = eel.choose_file()">Base Estado Priorizacion</button>
+                        <span x-text="file4 == null ? 'Ningun archivo seleccionado': file4" class="form-control"
+                            id="ruta_excel_estadoPrio" readonly required></span>
+                    </div>
                 </div>
+
                 <div style="display: flex;align-items: center;justify-content: center;">
                     <button type="submit" class="btn btn-danger">Transformar</button>
                 </div>

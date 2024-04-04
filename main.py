@@ -69,4 +69,4 @@ def fijoO(valores):
     fijoOrden(valores)
 
 
-eel.start("index.html", cmdline_args=["--start-maximized"],port='3306')
+eel.start("index.html", cmdline_args=["--start-maximized"],port='3309')
