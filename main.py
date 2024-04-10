@@ -3,7 +3,8 @@ import tkinter
 import pandas
 from tkinter import filedialog as fd
 from py_backend.data_transformation import data_transformation
-from py_backend.data_exporting import data_export
+from py_backend.data_transformation_mobile import data_transformation_mobile
+from py_backend.data_exporting import data_export,data_export_mobile
 from py_backend.settings import extractConfig
 from py_backend.settings import fijoTop, fijoOrden, extractAllConfig
 
@@ -45,8 +46,27 @@ def obtener_datos_excel():
 
 
 @eel.expose
+def obtener_datos_excel_mobile():
+    dataframe_excel = pandas.read_excel("file_preview_mobile.xlsx")
+    # Convertir el DataFrame a formato JSON
+    json_data = dataframe_excel.to_json(orient="split", index=False)
+    # Retornar el JSON
+    return json_data
+
+
+@eel.expose
 def export(option):
     data_export(option)
+
+
+@eel.expose
+def export_mobile(option):
+    data_export_mobile(option)
+
+
+@eel.expose
+def data_mobile(rutas, meses):
+    data_transformation_mobile(rutas, meses)
 
 
 @eel.expose
@@ -69,4 +89,4 @@ def fijoO(valores):
     fijoOrden(valores)
 
 
-eel.start("index.html", cmdline_args=["--start-maximized"],port='3309')
+eel.start("index.html", cmdline_args=["--start-maximized"], port="3309")

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Vista Previa Transformacion Backlog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+        integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="../images/logo.ico">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .loader_container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #loader {
+            position: absolute;
+        }
+
+        #contenido {
+            display: none;
+        }
+
+        .loader {
+            border: 30px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 30px solid #E4010B;
+            width: 150px;
+            height: 150px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #contenedor_tabla {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .header {
+            overflow: hidden;
+            background-color: #f1f1f1;
+            padding: 8px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header a {
+            float: left;
+            color: black;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            line-height: 25px;
+            border-radius: 4px;
+        }
+
+        .header .logo {
+            height: 40px;
+        }
+
+        .header a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .header a.active {
+            background-color: rgb(185, 11, 11);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <img class="logo" src="../images/logo.webp">
+            <h1 class="display-6">Auto-Backlog</h1>
+            <div class="header-right">
+                <a href='./movil.html'>Volver</a>
+                <a href='./fijo.html'>Fijo</a>
+                <a href='./FTTH.html'>FTTH</a>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div id="loader_container" class="loader_container">
+            <div class="loader" id="loader"></div>
+        </div>
+        <div class="container-fluid p-4" id="contenido">
+            <div class="row">
+                <div class="col-md-10">
+                    <h3 class="text-left">
+                        Vista previa Backlog
+                    </h3>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn-group btn-group-horizontal" role="group">
+
+                        <button class="btn btn-success" type="button" onclick="eel.export_mobile(1)">
+                            Excel
+                        </button>
+                        <button class="btn btn-secondary" type="button" onclick="eel.export_mobile(2)">
+                            CSV
+                        </button>
+                        <button class="btn btn-dark" type="button" id="clipboard" onclick="eel.export_mobile(3)">
+                            Copiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="contenedor_tabla">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <body>
+
+</html>
+<script type="text/javascript" src="/eel.js"></script>
+<script src="../scripts.js"></script>
+<script>
+    const elemento = document.querySelector("#clipboard");
+
+    elemento.addEventListener("click", function () {
+        alert("Informacion copiada al portapapeles")
+    });
+
+    function ocultarLoader() {
+        document.getElementById("loader_container").style.display = "none";
+        document.getElementById("contenido").style.display = "block";
+    }
+    async function cargarDatosExcel() {
+        const json_data = await eel.obtener_datos_excel_mobile()();
+
+        const tope = await eel.extConfig('ConfigMovil', 'topestacionbase')()
+
+        const datos = JSON.parse(json_data);
+
+        const columnas = datos.columns;
+        const filas = datos.data;
+
+        let tablaHTML = "<table class='table'><thead><tr>";
+        columnas.forEach(columna => {
+            tablaHTML += "<th>" + columna + "</th>";
+        });
+        tablaHTML += "</tr></thead><tbody>";
+
+        filas.forEach(fila => {
+            if (fila[0] > tope) {
+                tablaHTML += "<tr class='table-danger'>";
+            }
+            else {
+                tablaHTML += "<tr>";
+            }
+            fila.forEach(valor => {
+                tablaHTML += "<td>" + valor + "</td>";
+            });
+            tablaHTML += "</tr>";
+        });
+
+        tablaHTML += "</tbody></table>";
+
+        document.getElementById("contenedor_tabla").innerHTML = tablaHTML;
+        ocultarLoader();
+    }
+    cargarDatosExcel();
+</script>
