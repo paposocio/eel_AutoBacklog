@@ -10,7 +10,6 @@ from py_backend.settings import fijoTop, fijoOrden, extractAllConfig
 
 eel.init("web")
 
-
 @eel.expose
 def choose_file():
     # Crear una ventana modal
