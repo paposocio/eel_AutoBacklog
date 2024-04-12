@@ -31,7 +31,7 @@ def data_transformation(rutas, meses):
     dataframe4 = pd.read_excel(
         ruta_excel_estadoPrio, sheet_name="Priorizacion Baclok FJ"
     )
-    dataframe4['Estado Prio'] = 1
+    dataframe4["Estado Prio"] = 1
 
     dataframe_fusionado = pd.merge(dataframe1, dataframe2, on="NODO", how="outer")
     dataframe_fusionado = pd.merge(
@@ -39,21 +39,32 @@ def data_transformation(rutas, meses):
     )
 
     dataframe_fusionado = pd.merge(
-        dataframe_fusionado, dataframe4, on="NODO", how="outer"
+        dataframe_fusionado, dataframe4, on="NODO", how="left"
     )
 
-    dataframe_fusionado[mes_antepasado].fillna(0, inplace=True)
-    dataframe_fusionado[mes_anterior].fillna(0, inplace=True)
-    dataframe_fusionado[mes_medicion].fillna(0, inplace=True)
-    dataframe_fusionado['Estado Prio'].fillna(0, inplace=True)
+    dataframe_fusionado[mes_antepasado] = dataframe_fusionado[mes_antepasado].fillna(0)
+    dataframe_fusionado[mes_anterior] = dataframe_fusionado[mes_anterior].fillna(0)
+    dataframe_fusionado[mes_medicion] = dataframe_fusionado[mes_medicion].fillna(0)
+    dataframe_fusionado["Estado Prio"] = dataframe_fusionado["Estado Prio"].fillna(0)
 
     # Define la función para evaluar cada fila y asignar un texto y un valor numérico
     def evaluar_fila(fila):
         config = ConfigParser()
         config.read("settings.ini", encoding="utf-8")
 
-        if fila["FASE REAL MESA"] == "Monitoreo" and fila['Estado Prio'] == 1:
+        if fila["FASE REAL MESA"] == "Monitoreo" and fila["Estado Prio"] == 1:
             return ("Monitoreo", int(config["ConfigFijo"]["monitoreo"]))
+        elif (
+            fila["FASE REAL MESA"] != "Monitoreo"
+            and fila["Estado Prio"] == 1
+            and (
+                fila["Estado Prio"] == "Compras"
+                or fila["Estado Prio"] == "Diagnostico"
+                or fila["Estado Prio"] == "Implementacion"
+            )
+            and fila["Estado Prio"] != "No diagnostico"
+        ):
+            return ("Hold", int(config["ConfigFijo"]["hold"]))
         elif (
             fila[mes_medicion] == 1
             and fila[mes_anterior] == 1
@@ -86,30 +97,28 @@ def data_transformation(rutas, meses):
                 "Mes de medicion no + 1 (cualquiera)",
                 int(config["ConfigFijo"]["medNoMasUno"]),
             )
-        else:
-            return ("Hold", int(config["ConfigFijo"]["hold"]))
 
     # Aplica la función a cada fila del DataFrame utilizando apply()
     dataframe_fusionado[["Caso", "Priorizacion"]] = dataframe_fusionado.apply(
         lambda fila: pd.Series(evaluar_fila(fila), index=["Caso", "Priorizacion"]),
         axis=1,
     )
-    
+
     columnas = [
         "NODO",
         "REGIONAL",
         "CIUDAD",
-        "Aliado",
+        "ALIADO",
         "OPERA",
         mes_antepasado,
         mes_anterior,
         mes_medicion,
         "Caso",
-        "Priorizacion"
+        "Priorizacion",
     ]
 
     dataframe_fusionado = dataframe_fusionado[columnas]
-    
+
     dataframe_fusionado_ordenado = dataframe_fusionado.sort_values(by="Priorizacion")
 
     # Resetear el índice sin agregar una nueva columna
