@@ -3,54 +3,55 @@ from configparser import ConfigParser
 
 
 def data_transformation_mobile(rutas, meses):
-    ruta_excel_base1 = rutas[0]
-    ruta_excel_estadoPrio = rutas[1]
 
-    mes_medicion = meses[0]
-    mes_anterior = meses[1]
-    mes_antepasado = meses[2]
+    ruta_excel_base1, ruta_excel_estadoPrio = rutas
+    mes_medicion, mes_anterior, mes_antepasado = meses
 
+    # Leer los DataFrames originales
     dataframe1 = pd.read_excel(ruta_excel_base1, sheet_name=mes_medicion)
-    dataframe1[mes_antepasado] = 1
-
     dataframe2 = pd.read_excel(ruta_excel_base1, sheet_name=mes_anterior)
-    dataframe2[mes_anterior] = 1
-
     dataframe3 = pd.read_excel(ruta_excel_base1, sheet_name=mes_antepasado)
-    dataframe3[mes_medicion] = 1
-
     dataframe4 = pd.read_excel(
         ruta_excel_estadoPrio, sheet_name="Estado-prio-estaciones-base"
     )
-    dataframe4["Estado Prio"] = 1
 
-    dataframe_fusionado = pd.merge(dataframe1, dataframe2, on="EST-BASE", how="outer")
-    dataframe_fusionado = pd.merge(
-        dataframe_fusionado, dataframe3, on="EST-BASE", how="outer"
+    # Concatenar los DataFrames originales
+    nodos_fusionados = pd.concat(
+        [dataframe1, dataframe2, dataframe3], ignore_index=True
     )
 
-    dataframe_fusionado = pd.merge(
-        dataframe_fusionado, dataframe4, on="EST-BASE", how="outer"
-    )
+    # Eliminar duplicados de nodos
+    nodos_fusionados.drop_duplicates(inplace=True)
 
-    dataframe_fusionado[mes_antepasado].fillna(0, inplace=True)
-    dataframe_fusionado[mes_anterior].fillna(0, inplace=True)
-    dataframe_fusionado[mes_medicion].fillna(0, inplace=True)
-    dataframe_fusionado["Estado Prio"].fillna(0, inplace=True)
+    # Crear DataFrame fusionado con nodos únicos
+    dataframe_fusionado = nodos_fusionados.copy()
+
+    # Verificar si el nodo aparece en cada DataFrame original y marcarlo con 1 o 0
+    dataframe_fusionado[mes_medicion] = (
+        dataframe_fusionado["EST-BASE"].isin(dataframe1["EST-BASE"]).astype(int)
+    )
+    dataframe_fusionado[mes_anterior] = (
+        dataframe_fusionado["EST-BASE"].isin(dataframe2["EST-BASE"]).astype(int)
+    )
+    dataframe_fusionado[mes_antepasado] = (
+        dataframe_fusionado["EST-BASE"].isin(dataframe3["EST-BASE"]).astype(int)
+    )
+    dataframe_fusionado["Estado Prio"] = (
+        dataframe_fusionado["EST-BASE"].isin(dataframe4["EST-BASE"]).astype(int)
+    )
+    dataframe_fusionado["ESTADO"] = dataframe_fusionado["EST-BASE"].map(
+        dataframe4.set_index("EST-BASE")["ESTADO-PRIO"]
+    )
 
     # Define la función para evaluar cada fila y asignar un texto y un valor numérico
     def evaluar_fila(fila):
         config = ConfigParser()
         config.read("settings.ini", encoding="utf-8")
 
-        if fila["Estado Prio"] == 1:
-            if (
-                fila["ESTADO-PRIO"] == "Solucionado"
-                or fila["ESTADO-PRIO"] == "Monitoreo"
-            ):
-                return ("Monitoreo", int(config["ConfigMovil"]["monitoreo"]))
-            else:
-                return ("Hold", int(config["ConfigMovil"]["hold"]))
+        if fila["ESTADO"] == "Monitoreo" and fila["Estado Prio"] == 1:
+            return ("Monitoreo", int(config["ConfigMovil"]["monitoreo"]))
+        elif fila["ESTADO"] != "Monitoreo" and fila["ESTADO"] != "No diagnostico":
+            return ("Hold", int(config["ConfigMovil"]["hold"]))
         elif (
             fila[mes_medicion] == 1
             and fila[mes_anterior] == 1
@@ -69,13 +70,19 @@ def data_transformation_mobile(rutas, meses):
             and fila[mes_anterior] == 1
             and fila[mes_antepasado] == 1
         ):
-            return ("Mes de medicion no + 2", int(config["ConfigMovil"]["medNoMasDos"]))
+            return (
+                "Mes de medicion no + 2",
+                int(config["ConfigMovil"]["medNoMasDos"]),
+            )
         elif (
             fila[mes_medicion] == 1
             and fila[mes_anterior] == 0
             and fila[mes_antepasado] == 0
         ):
-            return ("Mes de medicion si + 0", int(config["ConfigMovil"]["medMasCero"]))
+            return (
+                "Mes de medicion si + 0",
+                int(config["ConfigMovil"]["medMasCero"]),
+            )
         elif fila[mes_medicion] == 0 and (
             fila[mes_anterior] == 1 or fila[mes_antepasado] == 1
         ):
@@ -83,8 +90,6 @@ def data_transformation_mobile(rutas, meses):
                 "Mes de medicion no + 1 (cualquiera)",
                 int(config["ConfigMovil"]["medNoMasUno"]),
             )
-        else:
-            return ("Hold", int(config["ConfigMovil"]["hold"]))
 
     # Aplica la función a cada fila del DataFrame utilizando apply()
     dataframe_fusionado[["Caso", "Priorizacion"]] = dataframe_fusionado.apply(
