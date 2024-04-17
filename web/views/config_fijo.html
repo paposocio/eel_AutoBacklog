@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuraciones</title>
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .loader {
+            display: none;
+            width: 10px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 8px solid #f3f3f3;
+            border-right-color: #E4010B;
+            animation: l2 0.8s infinite linear;
+        }
+
+        @keyframes l2 {
+            to {
+                transform: rotate(1turn)
+            }
+        }
+
+        .formOrdenFijo {
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .formOrdenFijo div {
+            width: 300px;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            border: 2px solid #e7e7e7;
+            border-radius: 20%;
+            height: 40px;
+        }
+
+        button:hover {
+            background-color: #555555;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width:100px ;display: flex;justify-content: space-between;align-items: center;">
+        <a href="#" onclick="redireccion('../index.html')">Volver</a>
+        <div class="loader" id="loader"></div>
+    </div>
+    <div>
+        <h2>Configuracion fijo:</h2>
+        <form>
+            <label for="topenodos">Cantidad de nodos a tratar: (cantidad de nodos con alcance)</label>
+            <input type="number" id="topenodos">
+            <button id="guardarTopeFijo">Guardar</button>
+        </form>
+
+        <form id="formOrdenFijo">
+            <h3>Orden de priorizacion:</h3>
+            <div class="formOrdenFijo">
+                <div id="monitoreodiv">
+                    <label for="monitoreo">Monitoreo</label>
+                    <input type="number" id="monitoreo" min="0" max="6" required>
+                </div>
+
+                <div id="holddiv">
+                    <label for="hold">Hold</label>
+                    <input type="number" id="hold" min="0" max="6" required>
+                </div>
+
+                <div id="rec3mesdiv">
+                    <label for="rec3mes">Recurrente 3 meses</label>
+                    <input type="number" id="rec3mes" min="0" max="6" required>
+                </div>
+
+                <div id="medmasunodiv">
+                    <label for="medmasuno">Mes medicion si + un mes</label>
+                    <input type="number" id="medmasuno" min="0" max="6" required>
+                </div>
+
+                <div id="mednomasdosdiv">
+                    <label for="mednomasdos">Mes medicion no + 2 meses</label>
+                    <input type="number" id="mednomasdos" min="0" max="6" required>
+                </div>
+
+                <div id="medmascerodiv">
+                    <label for="medmascero">Solo mes medicion</label>
+                    <input type="number" id="medmascero" min="0" max="6" required>
+                </div>
+
+                <div id="mednomasunodiv">
+                    <label for="mednomasuno">Mes medicion no + 1</label>
+                    <input type="number" id="mednomasuno" min="0" max="6" required>
+                </div>
+            </div>
+            <button id="guardarOrdenPrioFijo">Guardar</button>
+        </form>
+
+        <hr>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="/eel.js"></script>
+<script>
+    function mostrarLoader(){
+        document.getElementById("loader").style.display = "block";
+    }
+
+    function redireccion(url) {
+        mostrarLoader()
+        setTimeout(() => {
+            window.location.href = url;
+        }, 5000);
+    }
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        let config = await eel.extAllConfig("ConfigFijo")();
+        console.log(config);
+
+        for (var clave in config) {
+            let input = document.getElementById(clave);
+            input.placeholder = config[clave];
+            let divId = clave + 'div';
+            let div = document.getElementById(divId);
+
+            if (div === null) {
+                console.log("No se encontró el div con ID: " + divId);
+                continue; // Saltar al siguiente ciclo si el div no se encuentra
+            }
+
+            let orderValue = parseInt(config[clave]);
+            if (!isNaN(orderValue)) {
+                div.style.order = orderValue;
+            } else {
+                console.log("Valor no válido para order en " + clave + ": " + config[clave]);
+            }
+        }
+    });
+
+    const topeNodos = document.getElementById('guardarTopeFijo')
+    topeNodos.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, numero de nodos con alcance:\n' + document.getElementById('topenodos').value)
+        eel.fijoT('topenodos', document.getElementById('topenodos').value)
+    })
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById('formOrdenFijo')
+        var inputs = form.querySelectorAll('input[type="number"]');
+        inputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                var value = parseInt(this.value);
+                var selectedValues = [];
+                inputs.forEach(function (otherInput) {
+                    if (otherInput !== input) {
+                        var otherValue = parseInt(otherInput.value);
+                        if (!isNaN(otherValue)) {
+                            selectedValues.push(otherValue);
+                        }
+                    }
+                });
+                if (selectedValues.includes(value)) {
+                    alert('¡Este número ya ha sido seleccionado en otro campo!');
+                    this.value = '';
+                }
+            });
+        });
+    });
+
+    const ordenPrioFijo = document.getElementById('guardarOrdenPrioFijo')
+    ordenPrioFijo.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        var form = document.getElementById('formOrdenFijo')
+        var inputs = form.querySelectorAll('input[type="number"]');
+        var data = {};
+        inputs.forEach(function (input) {
+            data[input.id] = input.value;
+        });
+        eel.fijoO(data)
+        alert('Cambios realizados \n Orden actualizado')
+    })
+</script>

@@ -7,10 +7,10 @@ def extractConfig(seccion, atrib):
     return config[seccion][atrib]
 
 
-def extractAllConfig():
+def extractAllConfig(seccion):
     config = ConfigParser()
     config.read("settings.ini", encoding="utf-8")
-    config = dict(config.items("ConfigFijo"))
+    config = dict(config.items(seccion))
     return config
 
 
@@ -30,6 +30,27 @@ def fijoOrden(valores):
         config = ConfigParser()
         config.read("settings.ini", encoding="utf-8")
         config["ConfigFijo"][valor] = valores[valor]
+
+        with open("settings.ini", "w") as configfile:
+            config.write(configfile)
+
+
+def movilTop(atrib, valor):
+    valor = str(valor)
+    config = ConfigParser()
+    config.read("settings.ini", encoding="utf-8")
+    config["ConfigMovil"][atrib] = valor
+
+    with open("settings.ini", "w") as configfile:
+        config.write(configfile)
+
+
+def movilOrden(valores):
+    for valor in valores:
+        valor = str(valor)
+        config = ConfigParser()
+        config.read("settings.ini", encoding="utf-8")
+        config["ConfigMovil"][valor] = valores[valor]
 
         with open("settings.ini", "w") as configfile:
             config.write(configfile)

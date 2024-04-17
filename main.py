@@ -4,11 +4,18 @@ import pandas
 from tkinter import filedialog as fd
 from py_backend.data_transformation import data_transformation
 from py_backend.data_transformation_mobile import data_transformation_mobile
-from py_backend.data_exporting import data_export,data_export_mobile
+from py_backend.data_exporting import data_export, data_export_mobile
 from py_backend.settings import extractConfig
-from py_backend.settings import fijoTop, fijoOrden, extractAllConfig
+from py_backend.settings import (
+    fijoTop,
+    fijoOrden,
+    movilOrden,
+    movilTop,
+    extractAllConfig,
+)
 
 eel.init("web")
+
 
 @eel.expose
 def choose_file():
@@ -74,8 +81,8 @@ def extConfig(seccion, atrib):
 
 
 @eel.expose
-def extAllConfig():
-    return extractAllConfig()
+def extAllConfig(seccion):
+    return extractAllConfig(seccion)
 
 
 @eel.expose
@@ -86,6 +93,16 @@ def fijoT(atrib, valor):
 @eel.expose
 def fijoO(valores):
     fijoOrden(valores)
+
+
+@eel.expose
+def movilT(atrib, valor):
+    movilTop(atrib, valor)
+
+
+@eel.expose
+def movilO(valores):
+    movilOrden(valores)
 
 
 eel.start("index.html", cmdline_args=["--start-maximized"], port="3309")
