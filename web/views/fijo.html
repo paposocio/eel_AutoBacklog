@@ -22,7 +22,7 @@
         <div class="header">
             <img class="logo" src="../images/logo.webp">
             <h1 class="display-6">Auto-Backlog</h1>
-            <div class="header-right">
+            <div class="header-right">  
                 <a href='../index.html'>Volver</a>
                 <a href='./movil.html'>Movil</a>
                 <a href='./FTTH.html'>FTTH</a>
@@ -35,37 +35,37 @@
             <p class="small">Adjunte las bases de los ultimos 3 meses en orden descendente <mark>(recuerde que la
                     primera entrada establece
                     el mes de medicion)</mark> :</p>
-            <form id="mes_archivos_form" onsubmit="enviarFormulario(event)">
+            <form id="mes_archivos_form" x-on:submit="evaluacion">
                 <div class="container mt-5">
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                            x-on:click="file1 = eel.choose_file()">Base 1</button>
-                        <span x-text="file1 == null ? 'Ningun archivo seleccionado': file1" class="form-control"
-                            id="ruta_excel_base1" readonly required></span>
+                        <button class="btn btn-outline-danger" type="button" x-on:click="file1 = eel.choose_file()">Base
+                            1</button>
+                        <span x-text="file1 == null ? '' : file1" class="form-control" id="ruta_excel_base1" readonly
+                            required></span>
                         <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
                             id="mes1" required>
                     </div>
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                            x-on:click="file2 = eel.choose_file()">Base 2</button>
-                        <span x-text="file2 == null ? 'Ningun archivo seleccionado': file2" class="form-control"
-                            id="ruta_excel_base2" readonly required></span>
+                        <button class="btn btn-outline-danger" type="button" x-on:click="file2 = eel.choose_file()">Base
+                            2</button>
+                        <span x-text="file2 == null ? '' : file2" class="form-control" id="ruta_excel_base2" readonly
+                            required></span>
                         <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
-                            id="mes2" readonly required>
+                            id="mes2" required>
                     </div>
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-danger" type="button" id="button-addon1"
-                            x-on:click="file3 = eel.choose_file()">Base 3</button>
-                        <span x-text="file3 == null ? 'Ningun archivo seleccionado': file3" class="form-control"
-                            id="ruta_excel_base3" readonly required></span>
+                        <button class="btn btn-outline-danger" type="button" x-on:click="file3 = eel.choose_file()">Base
+                            3</button>
+                        <span x-text="file3 == null ? '' : file3" class="form-control" id="ruta_excel_base3" readonly
+                            required></span>
                         <input type="month" class="form-control" placeholder="" aria-describedby="button-addon1"
-                            id="mes3" readonly required>
+                            id="mes3" required>
                     </div>
                     <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon1"
-                            x-on:click="file4 = eel.choose_file()">Base Estado Priorizacion</button>
-                        <span x-text="file4 == null ? 'Ningun archivo seleccionado': file4" class="form-control"
-                            id="ruta_excel_estadoPrio" readonly required></span>
+                        <button class="btn btn-outline-secondary" type="button"
+                            x-on:click="file4 = eel.choose_file()">Base Estado Priorización</button>
+                        <span x-text="file4 == null ? '' : file4" class="form-control" id="ruta_excel_estadoPrio"
+                            readonly required></span>
                     </div>
                 </div>
 
@@ -95,6 +95,20 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
+    function evaluacion() {
+        // Verificar si los span tienen texto
+        const span1 = document.getElementById('ruta_excel_base1').textContent;
+        const span2 = document.getElementById('ruta_excel_base2').textContent;
+        const span3 = document.getElementById('ruta_excel_base3').textContent;
+        const span4 = document.getElementById('ruta_excel_estadoPrio').textContent;
+
+        if (!span1.trim() || !span2.trim() || !span3.trim() || !span4.trim()) {
+            alert("Por favor, seleccione todos los archivos antes de enviar el formulario.");
+            return;
+        }
+        enviarFormulario(event)
+    }
+
     input = document.getElementById("mes1")
     input.addEventListener("change", (event) => {
         // Obtenemos la fecha seleccionada como máximo
