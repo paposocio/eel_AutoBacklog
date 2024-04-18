@@ -16,15 +16,9 @@ def data_transformation_mobile(rutas, meses):
     )
 
     # Concatenar los DataFrames originales
-    nodos_fusionados = pd.concat(
+    dataframe_fusionado = pd.concat(
         [dataframe1, dataframe2, dataframe3], ignore_index=True
     )
-
-    # Eliminar duplicados de nodos
-    nodos_fusionados.drop_duplicates(inplace=True)
-
-    # Crear DataFrame fusionado con nodos únicos
-    dataframe_fusionado = nodos_fusionados.copy()
 
     # Verificar si el nodo aparece en cada DataFrame original y marcarlo con 1 o 0
     dataframe_fusionado[mes_medicion] = (
@@ -39,6 +33,11 @@ def data_transformation_mobile(rutas, meses):
     dataframe_fusionado["Estado Prio"] = (
         dataframe_fusionado["EST-BASE"].isin(dataframe4["EST-BASE"]).astype(int)
     )
+
+    # Eliminar duplicados de estaciones base
+    dataframe_fusionado.drop_duplicates(subset=["EST-BASE"], inplace=True)
+    dataframe4.drop_duplicates(subset=["EST-BASE"], inplace=True)
+
     dataframe_fusionado["ESTADO"] = dataframe_fusionado["EST-BASE"].map(
         dataframe4.set_index("EST-BASE")["ESTADO-PRIO"]
     )
@@ -50,7 +49,11 @@ def data_transformation_mobile(rutas, meses):
 
         if fila["ESTADO"] == "Monitoreo" and fila["Estado Prio"] == 1:
             return ("Monitoreo", int(config["ConfigMovil"]["monitoreo"]))
-        elif fila["ESTADO"] != "Monitoreo" and fila["ESTADO"] != "No diagnostico":
+        elif (
+            fila["ESTADO"] != "Monitoreo"
+            and fila["ESTADO"] != "No diagnosticado"
+            and pd.notna(fila["ESTADO"])
+        ):
             return ("Hold", int(config["ConfigMovil"]["hold"]))
         elif (
             fila[mes_medicion] == 1
