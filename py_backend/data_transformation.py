@@ -46,7 +46,7 @@ def data_transformation(rutas, meses):
         dataframe_fusionado["NODO"].isin(dataframe4["NODO"]).astype(int)
     )
     dataframe_fusionado["ESTADO"] = dataframe_fusionado["NODO"].map(
-        dataframe4.set_index("NODO")["FASE REAL MESA"]
+        dataframe4.set_index("NODO")["ESTADO-PRIO"]
     )
 
     # Define la función para evaluar cada fila y asignar un texto y un valor numérico
