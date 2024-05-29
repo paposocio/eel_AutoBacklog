@@ -70,9 +70,29 @@
     <div>
         <h2>Configuracion Movil:</h2>
         <form>
-            <label for="topestacionbase">Cantidad de nodos a tratar: (cantidad de nodos con alcance)</label>
+            <label for="topestacionbase">Cantidad de estaciones base a tratar: (cantidad de est-base con
+                alcance)</label>
             <input type="number" id="topestacionbase">
             <button id="guardarTopeMovil">Guardar</button>
+        </form>
+
+        <form>
+            <label for="nombrehoja">Nombre de la hoja que contiene el estado de priorizacion</label>
+            <input type="text" id="nombrehoja">
+            <button id="guardarHojaMovil">Guardar</button>
+        </form>
+
+        <form>
+            <label for="nombrecolumnaeb">Nombre columna estaciones base (debe ser la misma en todas las bases)</label>
+            <input type="text" id="nombrecolumnaeb">
+            <button id="guardarColumnaMovil">Guardar</button>
+        </form>
+
+
+        <form>
+            <label for="nombrecolumnaestadoprio">Nombre de la hoja que contiene el estado de priorizacion</label>
+            <input type="text" id="nombrecolumnaestadoprio">
+            <button id="guardarColumnaEstado">Guardar</button>
         </form>
 
         <form id="formOrdenMovil">
@@ -123,7 +143,7 @@
 </html>
 <script type="text/javascript" src="/eel.js"></script>
 <script>
-    function mostrarLoader(){
+    function mostrarLoader() {
         document.getElementById("loader").style.display = "block";
     }
 
@@ -163,6 +183,27 @@
         event.preventDefault(); // Evitar que el formulario se envíe
         alert('Cambios realizados, numero de nodos con alcance:\n' + document.getElementById('topestacionbase').value)
         eel.movilT('topestacionbase', document.getElementById('topestacionbase').value)
+    })
+
+    const columnaMovil = document.getElementById('guardarColumnaMovil')
+    columnaMovil.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la columna para est-base:\n' + document.getElementById('nombrecolumnaeb').value)
+        eel.movilT('nombrecolumnaeb', document.getElementById('nombrecolumnaeb').value)
+    })
+
+    const nombrehoja = document.getElementById('guardarHojaMovil')
+    nombrehoja.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la hoja con estados de priorizacion:\n' + document.getElementById('nombrehoja').value)
+        eel.movilT('nombrehoja', document.getElementById('nombrehoja').value)
+    })
+
+    const nombrecolumnaestadoprio = document.getElementById('guardarColumnaEstado')
+    nombrecolumnaestadoprio.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la columna con estados de priorizacion:\n' + document.getElementById('nombrecolumnaestadoprio').value)
+        eel.movilT('nombrecolumnaestadoprio', document.getElementById('nombrecolumnaestadoprio').value)
     })
 
     document.addEventListener("DOMContentLoaded", function () {

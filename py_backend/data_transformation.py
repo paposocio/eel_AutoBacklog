@@ -3,9 +3,27 @@ from configparser import ConfigParser
 
 
 def data_transformation(rutas, meses):
+    # Se hace primero un borrado de el preview para evitar 
+    # conflictos con previews que se hayan hecho antriormente
+    
+    # Leer el archivo Excel
+    df = pd.read_excel("file_preview.xlsx")
+
+    # Crear un DataFrame vacío con las mismas columnas
+    df_empty = pd.DataFrame(columns=df.columns)
+
+    # Escribir el DataFrame vacío en la misma hoja
+    with pd.ExcelWriter(df, engine="openpyxl", mode="a") as writer:
+        # Borrar la hoja existente
+        writer.book.remove(writer.book.active)
+        # Escribir el DataFrame vacío en una nueva hoja con el mismo nombre
+        df_empty.to_excel(writer, index=False, sheet_name="Sheet1")
 
     ruta_excel_base1, ruta_excel_base2, ruta_excel_base3, ruta_excel_estadoPrio = rutas
     mes_medicion, mes_anterior, mes_antepasado = meses
+
+    config = ConfigParser()
+    config.read("settings.ini", encoding="utf-8")
 
     # Leer los DataFrames originales
     dataframe1 = pd.read_excel(
@@ -18,7 +36,7 @@ def data_transformation(rutas, meses):
         ruta_excel_base3, sheet_name="Priorizacion " + mes_antepasado
     )
     dataframe4 = pd.read_excel(
-        ruta_excel_estadoPrio, sheet_name="Priorizacion Backlog FJ"
+        ruta_excel_estadoPrio, sheet_name=config["ConfigFijo"]["nombreLibro"]
     )
 
     # Concatenar los DataFrames originales

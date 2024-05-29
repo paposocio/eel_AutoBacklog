@@ -3,16 +3,34 @@ from configparser import ConfigParser
 
 
 def data_transformation_mobile(rutas, meses):
+    # Se hace primero un borrado de el preview para evitar 
+    # conflictos con previews que se hayan hecho antriormente
+    
+    # Leer el archivo Excel
+    df = pd.read_excel("file_preview_mobile.xlsx")
+
+    # Crear un DataFrame vacío con las mismas columnas
+    df_empty = pd.DataFrame(columns=df.columns)
+
+    # Escribir el DataFrame vacío en la misma hoja
+    with pd.ExcelWriter(df, engine="openpyxl", mode="a") as writer:
+        # Borrar la hoja existente
+        writer.book.remove(writer.book.active)
+        # Escribir el DataFrame vacío en una nueva hoja con el mismo nombre
+        df_empty.to_excel(writer, index=False, sheet_name="Sheet1")
 
     ruta_excel_base1, ruta_excel_estadoPrio = rutas
     mes_medicion, mes_anterior, mes_antepasado = meses
+
+    config = ConfigParser()
+    config.read("settings.ini", encoding="utf-8")
 
     # Leer los DataFrames originales
     dataframe1 = pd.read_excel(ruta_excel_base1, sheet_name=mes_medicion)
     dataframe2 = pd.read_excel(ruta_excel_base1, sheet_name=mes_anterior)
     dataframe3 = pd.read_excel(ruta_excel_base1, sheet_name=mes_antepasado)
     dataframe4 = pd.read_excel(
-        ruta_excel_estadoPrio, sheet_name="Estado-prio-estaciones-base"
+        ruta_excel_estadoPrio, sheet_name=config["ConfigMovil"]["nombrehoja"]
     )
 
     # Concatenar los DataFrames originales
@@ -39,7 +57,9 @@ def data_transformation_mobile(rutas, meses):
     dataframe4.drop_duplicates(subset=["EST-BASE"], inplace=True)
 
     dataframe_fusionado["ESTADO"] = dataframe_fusionado["EST-BASE"].map(
-        dataframe4.set_index("EST-BASE")["ESTADO-PRIO"]
+        dataframe4.set_index("EST-BASE")[
+            config["ConfigMovil"]["nombrecolumnaestadoprio"]
+        ]
     )
 
     # Define la función para evaluar cada fila y asignar un texto y un valor numérico

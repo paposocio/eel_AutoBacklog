@@ -75,6 +75,24 @@
             <button id="guardarTopeFijo">Guardar</button>
         </form>
 
+        <form>
+            <label for="nombrehoja">Nombre de la hoja que contiene el estado de priorizacion</label>
+            <input type="text" id="nombrehoja">
+            <button id="guardarHojaFijo">Guardar</button>
+        </form>
+
+        <form>
+            <label for="nombrecolumnanodo">Nombre columna nodos (debe ser la misma en todas las bases)</label>
+            <input type="text" id="nombrecolumnanodo">
+            <button id="guardarColumnaFijo">Guardar</button>
+        </form>
+
+        <form>
+            <label for="nombrecolumnaestadoprio">Nombre de la hoja que contiene el estado de priorizacion</label>
+            <input type="text" id="nombrecolumnaestadoprio">
+            <button id="guardarColumnaEstado">Guardar</button>
+        </form>
+
         <form id="formOrdenFijo">
             <h3>Orden de priorizacion:</h3>
             <div class="formOrdenFijo">
@@ -123,7 +141,7 @@
 </html>
 <script type="text/javascript" src="/eel.js"></script>
 <script>
-    function mostrarLoader(){
+    function mostrarLoader() {
         document.getElementById("loader").style.display = "block";
     }
 
@@ -163,6 +181,27 @@
         event.preventDefault(); // Evitar que el formulario se envíe
         alert('Cambios realizados, numero de nodos con alcance:\n' + document.getElementById('topenodos').value)
         eel.fijoT('topenodos', document.getElementById('topenodos').value)
+    })
+
+    const columnaFijo = document.getElementById('guardarColumnaFijo')
+    columnaFijo.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la columna para nodos:\n' + document.getElementById('nombrecolumnanodo').value)
+        eel.fijoT('nombrecolumnanodo', document.getElementById('nombrecolumnanodo').value)
+    })
+
+    const nombrehoja = document.getElementById('guardarHojaFijo')
+    nombrehoja.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la hoja con estados de priorizacion:\n' + document.getElementById('nombrehoja').value)
+        eel.fijoT('nombrehoja', document.getElementById('nombrehoja').value)
+    })
+
+    const nombrecolumnaestadoprio = document.getElementById('guardarColumnaEstado')
+    nombrecolumnaestadoprio.addEventListener('click', () => {
+        event.preventDefault(); // Evitar que el formulario se envíe
+        alert('Cambios realizados, nombre de la columna con estados de priorizacion:\n' + document.getElementById('nombrecolumnaestadoprio').value)
+        eel.fijoT('nombrecolumnaestadoprio', document.getElementById('nombrecolumnaestadoprio').value)
     })
 
     document.addEventListener("DOMContentLoaded", function () {

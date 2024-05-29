@@ -17,7 +17,7 @@ def data_export(option):
         config.read("settings.ini", encoding="utf-8")
 
         # Obtén la fila específica
-        fila_especifica = hoja[(int(config["ConfigFijo"]["topenodos"])+2)]
+        fila_especifica = hoja[(int(config["ConfigFijo"]["topenodos"]) + 2)]
 
         # Define el estilo de resaltado (por ejemplo, fondo amarillo)
         estilo_resaltado = PatternFill(
@@ -87,9 +87,9 @@ def data_export_mobile(option):
 
         config = ConfigParser()
         config.read("settings.ini", encoding="utf-8")
-        
+
         # Obtén la fila específica
-        fila_especifica = hoja[(int(config["ConfigMovil"]["topestacionbase"])+2)]
+        fila_especifica = hoja[(int(config["ConfigMovil"]["topestacionbase"]) + 2)]
 
         # Define el estilo de resaltado (por ejemplo, fondo amarillo)
         estilo_resaltado = PatternFill(
